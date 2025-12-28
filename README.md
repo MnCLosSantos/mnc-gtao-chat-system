@@ -7,6 +7,7 @@
 ---
 
 ## 🌟 Overview
+## Original link: https://github.com/citizenfx/cfx-server-data/tree/master/resources/%5Bgameplay%5D/chat-theme-gtao
 
 A **custom chat system** for QBCore-based FiveM servers featuring a GTA Online-inspired theme, immersive 3D /me text, roleplay chat games, OOC messaging, and enhanced styling. Built with performance and immersion in mind, this resource overrides the default chat for a more engaging experience.
 
@@ -194,10 +195,13 @@ Contributions are welcome! Please:
 
 ## 📞 Support & Community
 
-For support, bug reports, or feature requests:
+[![Discord](https://img.shields.io/badge/Discord-Join%20Server-7289da?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/aTBsSZe5C6)
+
+[![GitHub](https://img.shields.io/badge/GitHub-View%20Script-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/MnCLosSantos/mnc-gtao-chat-system)
+
+**Need Help?**
 - Open an issue on GitHub
-- Join our Discord community
-- Check existing documentation
+- Join our Discord server
 
 ---
 
