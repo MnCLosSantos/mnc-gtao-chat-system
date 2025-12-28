@@ -15,19 +15,19 @@
 }
 
 .chat-input {
-    width: 40vw;  /* Adjust this value: e.g., 50vw for medium, 70vw for wider, 90vw for very wide */
-    max-width: 500px;  /* Optional: prevent it from getting too wide on large screens */
+    width: 50vw;  /* Increased from 40vw → gives more room for long messages */
+    max-width: 600px;  /* Slightly higher max to prevent squeezing on big screens */
 }
 
 /* ========== FONTS ========== */
 @font-face {
     font-family: 'Font2';
-    src: url(https://runtime.fivem.net/temp/ChaletLondonNineteenSixty.otf?a);
+    src: ur[](https://runtime.fivem.net/temp/ChaletLondonNineteenSixty.otf?a);
 }
 
 @font-face {
     font-family: 'Font2_cond';
-    src: url(https://runtime.fivem.net/temp/chaletcomprime-colognesixty-webfont.ttf?a);
+    src: ur[](https://runtime.fivem.net/temp/chaletcomprime-colognesixty-webfont.ttf?a);
 }
 
 * {
@@ -75,6 +75,22 @@
     transition: all 0.3s ease;
     
     text-align: left;
+
+    /* === FIX: Proper word wrapping for long messages === */
+    word-wrap: break-word;         /* Older browsers */
+    overflow-wrap: break-word;      /* Modern standard */
+    word-break: break-word;        /* Breaks very long words/URLs */
+    white-space: normal;           /* Allows natural line wrapping */
+}
+
+/* Make sure the actual message text span also wraps */
+.msg > span > span > span {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+    vertical-align: baseline;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 @keyframes slideIn {
@@ -98,7 +114,7 @@
     
     line-height: 1;
     
-    font-size: calc(1.7vh);
+    font-size: calc(1.0vh);
     
     /* Gradient text effect */
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -107,12 +123,6 @@
     background-clip: text;
     
     text-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
-}
-
-/* Message text */
-.msg > span > span > span {
-    vertical-align: baseline;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .msg i:first-of-type {
