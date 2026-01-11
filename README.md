@@ -1,233 +1,166 @@
-# 💬 Reworked GTAO-Styled Chat System for QBCore
+# 💬 mnc-gtao-chat-system — GTAO‑Styled Chat for QBCore
 
-[![FiveM](https://img.shields.io/badge/FiveM-Ready-green.svg)](https://fivem.net/)
-[![QBCore](https://img.shields.io/badge/Framework-QBCore-blue.svg)](https://github.com/qbcore-framework)
+[![FiveM](https://img.shields.io/badge/FiveM-Ready-green.svg)](https://fivem.net/)  
+[![QBCore](https://img.shields.io/badge/Framework-QBCore-blue.svg)](https://github.com/qbcore-framework)  
 [![Version](https://img.shields.io/badge/Version-1.0.0-brightgreen.svg)]()
 
----
+A GTA Online-themed chat UI and chat-command resource for QBCore-based FiveM servers. This resource includes a styled NUI chat, 3D /me text, a set of roleplay chat games, a /clear to clear chat flow, and aggressive blocking logic to prevent other resources from injecting messages into the chat UI (see WARNING).
 
-## 🌟 Overview
-## Original link: https://github.com/citizenfx/cfx-server-data/tree/master/resources/%5Bgameplay%5D/chat-theme-gtao
-
-A **custom chat rework** for QBCore-based FiveM servers featuring a GTA Online-inspired theme, immersive 3D /me text, roleplay chat games, OOC messaging, and enhanced styling. Built with performance and immersion in mind, this resource overrides the default chat for a more engaging experience.
+This README documents the current codebase (files: fxmanifest.lua, cl_chat.lua, sv_chat.lua, shadow.js, style.css).
 
 ---
 
-## ✨ Key Features
+## Highlights / Features
 
-### 🎭 Chat Interface & Styling
-- **GTA Online theme** with custom CSS for modern, gradient-based usernames and message layouts
-- **Responsive design** adapting to different aspect ratios (e.g., ultrawide support)
-- **Drop shadow effects** via SVG filters for text visibility
-- **Customizable positions** and paddings through CSS variables
-- **Animated message entry** with slide-in transitions
-- **Optional subtle backgrounds** for better readability
-
-### 💬 Messaging Enhancements
-- **Character name integration** from QBCore (first + last name)
-- **/me command** with 3D text display above player head (visible within 20m range)
-- **/ooc command** for out-of-character messages with gold coloring
-- **/clear command** to clear personal chat history
-
-### 🎲 Roleplay Chat Games
-- **Interactive help menu** via /chatgames command showing all available games
-- **/roll [max]**: Roll a number (default 1-100, up to 10000) displayed as 3D /me text
-- **/dice**: Roll two six-sided dice with sum calculation
-- **/flip**: Coin flip with Heads/Tails result
-- **/rps [rock|paper|scissors]**: Play against the server with emojis and outcomes
-- **/8ball [question]**: Magic 8-Ball with 20 possible responses
-- **Global cooldown** (3 seconds) to prevent spam
-- **Emoji integration** for visual flair (🎲, 🪙, ✊, etc.)
-
-### 🛠️ Technical Features
-- **NUI-based clearing** for reliable chat history reset
-- **Thread-based 3D text rendering** for smooth performance
-- **Customizable display time** for /me text (default 15 seconds)
-- **ox_lib integration** for modern menus and notifications
-- **Client-server synchronization** for events like 3D text display
+- GTA Online-inspired visual theme (CSS + SVG drop shadows)
+- NUI-based chat UI (style.css + shadow.js)
+- 3D /me text shown above player heads (client-side, distance-limited)
+- Roleplay mini-games: /roll, /dice, /flip, /rps, /8ball
+- /chatgames opens an ox_lib context menu help screen (if using ox_lib)
+- /clear command clears your local chat via NUI
+- NUI message marking and multiple layers of aggressive external message blocking:
+  - client-side AddEventHandler blocks in cl_chat.lua,
+  - server-side AddEventHandler blocks in sv_chat.lua,
+  - window postMessage / message listener interception in shadow.js
+- Uses QBCore for player & character name resolution
 
 ---
 
-## 📋 Requirements
+## Requirements
 
-| Dependency | Version | Required |
-|------------|---------|----------|
-| QBCore Framework | Latest | ✅ Yes |
-| ox_lib | Latest | ✅ Yes |
+- FiveM / Cfx.re server
+- QBCore framework (tested against modern QBCore exports)
+- ox_lib (recommended for menu/notifications integration — used by `chat:openGamesHelp` and lib.notify). If you do not use ox_lib, remove or adapt those parts.
 
 ---
 
-## 🚀 Installation
+## Installation
 
-### 1️⃣ Download & Extract
+1. Clone (or download) this repository into your server resources folder:
 
 ```bash
-# Clone from GitHub
-git clone https://github.com/MnCLosSantos/gtao-chat-system.git
-
-# OR download ZIP from Releases
+git clone https://github.com/MnCLosSantos/mnc-gtao-chat-system.git
+# Place into:
+# [server-data]/resources/[custom]/mnc-gtao-chat-system/
 ```
 
-Place into your resources folder:
-```
-[server-data]/resources/[custom]/gtao-chat-system/
-```
+2. Add to your server config (ensure dependencies first):
 
-### 2️⃣ Database Setup
-
-No database tables required! This resource uses in-memory handling and QBCore's existing player data.
-
-### 3️⃣ Add to Server Config
-
-```lua
+```ini
 # server.cfg
-ensure ox_lib
-ensure gtao-chat-system
+ensure ox_lib        # recommended (if you use ox_lib features)
+ensure mnc-gtao-chat-system
 ```
 
-### 4️⃣ Configure Settings
-
-Edit `cl_chat.lua` and `sv_chat.lua` for customizations:
-
-- **/me Display Time**: Adjust `displayTime = 15000` in `cl_chat.lua` (milliseconds)
-- **Visibility Range**: Change `20.0` in distance check for 3D text
-- **Text Color**: Modify `SetTextColour(173, 216, 230, 255)` for 3D text
-- **Cooldown**: Update `3000` in game commands for spam prevention
-- **OOC Template**: Customize the HTML template in `/ooc` command
-
-Edit `style.css` for visual tweaks:
-
-```css
-:root {
-    --chat-left: 2.27vh;  /* Chat position from left */
-    --chat-input-bottom: 50vh;  /* Input field position */
-    --radius: 12px;  /* Border radius */
-}
-
-.msg > span > span > b {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);  /* Username gradient */
-}
-```
-
-### 5️⃣ Add Items to QBCore (Optional)
-
-No items required! All features are command-based.
+3. Restart/refresh your server or resource.
 
 ---
 
-## ⚙️ Configuration Guide
+## Quick Configuration
 
-### 🎯 Command Configuration
+Open the listed files to tweak behaviour:
 
-All commands are registered in `sv_chat.lua`:
+- cl_chat.lua
+  - /me display time: change `local displayTime = 15000` (milliseconds)
+  - 3D text visibility range: change the `20.0` distance check inside the display thread
+  - 3D text color: `SetTextColour(173, 216, 230, 255)`
+- sv_chat.lua
+  - Game/global cooldown: update the 3000 ms checks (variable `GameCooldowns[src]` and comparisons)
+  - Roll limits: default/min/max set in `roll` command (default 100, capped at 10000)
+- style.css
+  - Visual variables at the top (`:root`) — chat position, paddings, radii, fonts, etc.
 
-```lua
--- /me example
-RegisterCommand('me', function(source, args, rawCommand)
-    local message = table.concat(args, ' ')
-    if message == '' then return end
-    TriggerClientEvent('chat:displayMe', -1, src, message)
-end, false)
-
--- /roll example
-RegisterCommand('roll', function(source, args, rawCommand)
-    local maxRoll = tonumber(args[1]) or 100
-    local roll = math.random(1, maxRoll)
-    local action = "rolled a " .. roll .. " (1-" .. maxRoll .. ") 🎲"
-    TriggerClientEvent('chat:displayMe', -1, src, action)
-end, false)
-```
-
-### 🏭 Styling Configuration
-
-In `style.css`:
-
-```css
-.chat-window {
-    --size: calc(((2.7vh * 1.2)) * 13);  /* Height calculation */
-    left: var(--chat-left);
-    bottom: var(--chat-window-bottom);
-}
-
-.msg {
-    font-size: calc(1.2vh);  /* Message font size */
-    animation: slideIn 0.3s ease-out;  /* Entry animation */
-}
-```
-
-### 💰 Game Help Menu
-
-Configured in `cl_chat.lua` using ox_lib:
-
-```lua
-lib.registerContext({
-    id = 'rp_games_help',
-    title = '🎲 Chat Games Help',
-    options = { ... }  // Add or modify game entries here
-})
-```
+Examples (server-side ensure & simple changes):
+- To increase /me display time to 20s: set `displayTime = 20000` in cl_chat.lua
+- To increase /me visibility distance to 30m: change `if #(GetEntityCoords(playerPed) - senderPos) < 20.0 then` to `< 30.0`
 
 ---
 
-## 🎬 Available Commands
+## Commands
 
-| Command | Description | Example Usage |
-|---------|-------------|---------------|
-| `/me [message]` | Display 3D action text above head | `/me waves hello` |
-| `/ooc [message]` | Send out-of-character message | `/ooc Need help?` |
-| `/clear` | Clear your chat history | `/clear` |
-| `/chatgames` | Open games help menu | `/chatgames` |
-| `/roll [max]` | Roll a number (1-max) | `/roll 20` |
-| `/dice` | Roll two dice | `/dice` |
-| `/flip` | Coin flip | `/flip` |
-| `/rps [choice]` | Rock Paper Scissors | `/rps rock` |
-| `/8ball [question]` | Magic 8-Ball | `/8ball Will I win?` |
+Server-registered commands (implemented in sv_chat.lua):
+
+- /me [message] — display 3D action text above your head, broadcast as a /me action
+  - Example: `/me waves hello`
+- /clear — clears your local NUI chat via `chat:clear`
+- /chatgames — opens an ox_lib-based help menu (requires ox_lib)
+- /roll [max] — roll a number (default 1–100, accepted max up to 10000). Example: `/roll 20`
+- /dice — roll two six-sided dice. Example: `/dice`
+- /flip — coin flip (Heads/Tails). Example: `/flip`
+- /rps [rock|paper|scissors] — rock-paper-scissors vs server. Example: `/rps rock`
+- /8ball [question] — magic 8-ball responses. Example: `/8ball Will I win?`
+
+Notes:
+- All mini-games apply a global per-player cooldown of 3 seconds by default (server-side).
+- Message broadcast for games uses `TriggerClientEvent('chat:displayMe', -1, src, action)` to show as /me-style 3D text.
 
 ---
 
-### Contributing
-Contributions are welcome! Please:
+## Aggressive External Message Blocking — IMPORTANT WARNING
+
+This resource includes logic that attempts to block any chat messages coming from other resources. The blocking is implemented in multiple places:
+
+- cl_chat.lua: overrides SendNUIMessage to mark own messages and registers AddEventHandler for `chat:addMessage`, `chatMessage`, `__cfx_internal:chatMessage`, and `onChatMessage` to CancelEvent() when invoker != this resource.
+- sv_chat.lua: registers AddEventHandler for server-side `chat:addMessage` and `__cfx_internal:serverPrint` to CancelEvent() when invoker != this resource.
+- shadow.js: intercepts window/document `message` events and overrides `postMessage` to ignore any ON_MESSAGE that does not include `__fromOurResource`.
+
+Why this matters:
+- This will block other resources that rely on FiveM's chat events to display messages in the same NUI. If you run third-party scripts that broadcast chat via `TriggerClientEvent('chat:addMessage', ...)` or rely on the default chat handler, their messages will be suppressed.
+- If you want compatibility with other resources, remove or comment out the blocking sections in cl_chat.lua, sv_chat.lua and the message-intercept portion of shadow.js. Search for the "AGGRESSIVE EXTERNAL MESSAGE BLOCKING" headers to find the relevant sections.
+
+Recommended approach:
+- If you intend to use this resource as *the* chat UI for your server and want to prevent duplicates/injection, keep the blocking logic.
+- If you want cooperative behavior, remove or modify the blocking to only filter known duplicate sources instead of cancelling all external messages.
+
+---
+
+## NUI & Styling Details
+
+- style.css contains chat layout, fonts, responsive aspect-ratio handling, word wrapping fixes and SVG drop-shadow filter usage.
+- shadow.js includes the SVG drop-shadow setup and the JavaScript-level message interception described above.
+- fxmanifest.lua registers the chat theme (style.css and shadow.js) and marks the `chat_theme 'gtao'` msg template. It also references `@ox_lib/init.lua` as a shared script for ox_lib integration.
+
+---
+
+## Troubleshooting & Tips
+
+- If 3D text isn't appearing:
+  - Ensure client can receive the `chat:displayMe` event.
+  - Check that `GetPlayerFromServerId(senderServerId)` returns a valid player ped (not -1 or 0).
+  - Verify displayTime and distance values in cl_chat.lua.
+- If other resources' chat messages are missing, review the "Aggressive External Message Blocking" section above and disable blocking if needed.
+- If `lib` (ox_lib) functions cause errors, either install ox_lib or remove the `lib.registerContext` / `lib.notify` calls in cl_chat.lua.
+
+---
+
+## Contributing
+
+Contributions welcome! Suggestions:
 1. Fork the repository
 2. Create a feature branch
-3. Submit a pull request with detailed description
+3. Open a pull request with a detailed description of changes
+
+Please update the README for any functionality or config additions you include.
 
 ---
 
-## 📞 Support & Community
+## Changelog
 
-[![Discord](https://img.shields.io/badge/Discord-Join%20Server-7289da?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/aTBsSZe5C6)
-
-[![GitHub](https://img.shields.io/badge/GitHub-View%20Script-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/MnCLosSantos/mnc-gtao-chat-system)
-
-**Need Help?**
-- Open an issue on GitHub
-- Join our Discord server
-
----
-
-## 🔄 Changelog
-
-### Version 1.0.0 (Current Release)
-**New Features:**
-- ✨ GTA Online-styled chat theme with custom CSS and JS
-- ✨ 3D /me text with distance-based visibility
-- ✨ Roleplay chat games (/roll, /dice, /flip, /rps, /8ball)
-- ✨ /ooc messaging with custom formatting
-- ✨ /clear command for personal chat reset
-- ✨ Interactive games help menu via ox_lib
-- ✨ QBCore integration for character names
-- ✨ Responsive design and animations
-
-**Improvements:**
-- 🔧 Optimized 3D text rendering in client threads
-- 🔧 Enhanced message templates for better visuals
-- 🔧 Added global cooldown for game commands
-
-**Bug Fixes:**
-- 🐛 Fixed chat clearing not working via NUI
-- 🐛 Resolved 3D text not showing for invalid peds
-- 🐛 Corrected game cooldown not applying properly
+### v1.0.0
+- Initial release:
+  - GTAO-styled chat UI + styling (style.css)
+  - NUI message interception & aggressive blocking (shadow.js, cl_chat.lua, sv_chat.lua)
+  - 3D /me text rendering (cl_chat.lua)
+  - Chat games: /roll, /dice, /flip, /rps, /8ball (sv_chat.lua)
+  - /clear and /chatgames (ox_lib context) support
 
 ---
 
-**Enjoy enhanced chat features on your FiveM server! 💬**
+## Support
+
+- Open an issue on GitHub: [mnc-gtao-chat-system issues](https://github.com/MnCLosSantos/mnc-gtao-chat-system/issues)
+- Join the project's Discord (if available) for faster help.
+
+---
+
+Enjoy the GTAO-flavored chat on your FiveM server — and be careful with blocking behavior if you run other chat-dependent resources!
