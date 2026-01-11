@@ -1,13 +1,48 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 local GameCooldowns = {}
 
--- Override the default chat message handler
+-- ============================================================================
+-- AGGRESSIVE EXTERNAL MESSAGE BLOCKING - Only allow messages from THIS script
+-- ============================================================================
+
+local ourResource = GetCurrentResourceName()
+
+-- Block all chat:addMessage calls from other scripts on SERVER
+AddEventHandler('chat:addMessage', function()
+    local invoker = GetInvokingResource()
+    
+    -- Block if not from our resource (allow nil for internal)
+    if invoker ~= nil and invoker ~= ourResource then
+        CancelEvent()
+    end
+end)
+
+-- Block all __cfx_internal:serverPrint events
+AddEventHandler('__cfx_internal:serverPrint', function()
+    local invoker = GetInvokingResource()
+    
+    if invoker ~= nil and invoker ~= ourResource then
+        CancelEvent()
+    end
+end)
+
+
+-- ============================================================================
+-- CHAT MESSAGE HANDLER
+-- ============================================================================
+
+-- Override the default chat message handler (player-typed messages only)
 AddEventHandler('chatMessage', function(source, name, message)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     
     -- Cancel default behavior
     CancelEvent()
+    
+    -- Block if source is 0 (console/server generated)
+    if src == 0 or src == nil then
+        return
+    end
     
     if not Player then
         -- Fallback to regular name if player data not loaded
@@ -25,6 +60,10 @@ AddEventHandler('chatMessage', function(source, name, message)
         args = { characterName, message }
     })
 end)
+
+-- ============================================================================
+-- COMMANDS
+-- ============================================================================
 
 -- /me command (3D text above head)
 RegisterCommand('me', function(source, args, rawCommand)
@@ -44,39 +83,15 @@ RegisterCommand('me', function(source, args, rawCommand)
     TriggerClientEvent('chat:displayMe', -1, src, message)
 end, false)
 
--- /ooc command
-RegisterCommand('ooc', function(source, args, rawCommand)
-    local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
-    
-    if not Player then return end
-    
-    local characterName = Player.PlayerData.charinfo.firstname .. ' ' .. Player.PlayerData.charinfo.lastname
-    local message = table.concat(args, ' ')
-    
-    if message == '' then
-        TriggerClientEvent('QBCore:Notify', src, 'You must enter a message', 'error')
-        return
-    end
-    
-    TriggerClientEvent('chat:addMessage', -1, {
-        template = '<div class="chat-message"><span style="color: #FFD700;">[OOC] {0}: {1}</span></div>',
-        args = { characterName, message }
-    })
-end, false)
-
 -- /clear command - clears chat for the player
 RegisterCommand('clear', function(source, args, rawCommand)
     local src = source
     TriggerClientEvent('chat:clear', src)
 end, false)
 
-
-
-
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
--- -- -- -- -- -- -- -- -- -- CHAT GAMES AND OTHER -- -- -- -- -- -- -- -- -- -- 
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+-- ============================================================================
+-- CHAT GAMES
+-- ============================================================================
 
 -- /games - Opens a help modal with all RP game explanations
 RegisterCommand('chatgames', function(source, args, rawCommand)
@@ -144,7 +159,7 @@ RegisterCommand('flip', function(source, args, rawCommand)
     end
     GameCooldowns[src] = now
     
-    local side = math.random(2) == 1 and "Heads 👑" or "Tails 🍑"
+    local side = math.random(2) == 1 and "Heads 👑" or "Tails 🔱"
     local action = "flipped 🪙 " .. side .. "!"
     
     TriggerClientEvent('chat:displayMe', -1, src, action)
