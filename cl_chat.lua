@@ -1,10 +1,63 @@
+-- ============================================================================
+-- ULTRA-AGGRESSIVE EXTERNAL MESSAGE BLOCKING
+-- ============================================================================
+
+local ourResource = GetCurrentResourceName()
+
+-- Override SendNUIMessage to mark our messages
+local originalSendNUI = SendNUIMessage
+SendNUIMessage = function(data)
+    -- Mark all our NUI messages
+    if data and type(data) == 'table' then
+        data.__fromOurResource = true
+    end
+    return originalSendNUI(data)
+end
+
+-- Block ALL incoming chat:addMessage events from other resources
+AddEventHandler('chat:addMessage', function(message)
+    local invoker = GetInvokingResource()
+    
+    -- Block everything that's not from our resource
+    if invoker ~= nil and invoker ~= ourResource then
+        CancelEvent()
+        return
+    end
+end)
+
+-- Block chatMessage from other scripts
+AddEventHandler('chatMessage', function(source, name, message)
+    local invoker = GetInvokingResource()
+    if invoker ~= nil and invoker ~= ourResource then
+        CancelEvent()
+    end
+end)
+
+-- Block internal chat messages
+AddEventHandler('__cfx_internal:chatMessage', function()
+    local invoker = GetInvokingResource()
+    if invoker ~= nil and invoker ~= ourResource then
+        CancelEvent()
+    end
+end)
+
+-- Block onChatMessage
+AddEventHandler('onChatMessage', function()
+    local invoker = GetInvokingResource()
+    if invoker ~= nil and invoker ~= ourResource then
+        CancelEvent()
+    end
+end)
+
+-- ============================================================================
+-- ORIGINAL CHAT FUNCTIONALITY
+-- ============================================================================
+
 -- Client-side chat clear handler (fixed)
 RegisterNetEvent('chat:clear')
 AddEventHandler('chat:clear', function()
-    -- This is the native way the default chat resource clears messages
-    -- It sends a message to the NUI to clear the chat history
     SendNUIMessage({
-        meth = 'clear'
+        type = 'ON_CLEAR'
     })
 end)
 
