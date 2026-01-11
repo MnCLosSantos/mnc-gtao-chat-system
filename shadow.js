@@ -1,3 +1,63 @@
+// ============================================================================
+// AGGRESSIVE NUI MESSAGE BLOCKER - Block ALL external chat messages
+// ============================================================================
+(function() {
+    
+    // Method 1: Intercept window message events
+    const originalAddEventListener = window.addEventListener;
+    window.addEventListener = function(type, listener, options) {
+        if (type === 'message') {
+            const wrappedListener = function(event) {
+                const data = event.data || {};
+                
+                // Block ALL ON_MESSAGE unless marked as allowed
+                if (data.type === 'ON_MESSAGE' && !data.__fromOurResource) {
+                    event.stopImmediatePropagation();
+                    event.preventDefault();
+                    return false;
+                }
+                
+                return listener.call(this, event);
+            };
+            
+            return originalAddEventListener.call(this, type, wrappedListener, options);
+        }
+        
+        return originalAddEventListener.call(this, type, listener, options);
+    };
+    
+    // Method 2: Override postMessage to intercept direct posts
+    const originalPostMessage = window.postMessage.bind(window);
+    window.postMessage = function(message, targetOrigin, transfer) {
+        if (message && message.type === 'ON_MESSAGE' && !message.__fromOurResource) {
+            return;
+        }
+        return originalPostMessage(message, targetOrigin, transfer);
+    };
+    
+    // Method 3: Intercept at document level too
+    if (document.addEventListener) {
+        const origDocListener = document.addEventListener.bind(document);
+        document.addEventListener = function(type, listener, options) {
+            if (type === 'message') {
+                const wrappedListener = function(event) {
+                    const data = event.data || {};
+                    if (data.type === 'ON_MESSAGE' && !data.__fromOurResource) {
+                        return false;
+                    }
+                    return listener.call(this, event);
+                };
+                return origDocListener(type, wrappedListener, options);
+            }
+            return origDocListener(type, listener, options);
+        };
+    }
+    
+})();
+
+// ============================================================================
+// ORIGINAL SHADOW FILTER CODE
+// ============================================================================
 (function() {
 var Filters = {}
 
