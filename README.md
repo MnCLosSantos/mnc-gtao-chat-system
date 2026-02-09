@@ -3,12 +3,23 @@
 [![FiveM](https://img.shields.io/badge/FiveM-Ready-green.svg)](https://fivem.net/)  
 [![QBCore](https://img.shields.io/badge/Framework-QBCore-blue.svg)](https://github.com/qbcore-framework)  
 [![Version](https://img.shields.io/badge/Version-1.0.0-brightgreen.svg)]()
+![mncchatsystem](https://github.com/user-attachments/assets/9773d022-567d-41b6-9297-a3ffa7f56519)
 
 A GTA Online-themed chat UI and chat-command resource for QBCore-based FiveM servers. This resource includes a styled NUI chat, 3D /me text, a set of roleplay chat games, a /clear to clear chat flow, and aggressive blocking logic to prevent other resources from injecting messages into the chat UI (see WARNING).
 
 This README documents the current codebase (files: fxmanifest.lua, cl_chat.lua, sv_chat.lua, shadow.js, style.css).
 
 ---
+<img width="1920" height="1080" alt="Screenshot (32)" src="https://github.com/user-attachments/assets/3876eb0a-f5e9-4ab2-b0c6-cb89e5297a69" />
+<img width="1920" height="1080" alt="Screenshot (39)" src="https://github.com/user-attachments/assets/131607dc-6459-43fe-b899-0dfb48d5d7fb" />
+<img width="1920" height="1080" alt="Screenshot (37)" src="https://github.com/user-attachments/assets/4e87581a-0771-46d6-a999-7c7abd3af286" />
+
+<img width="1920" height="1080" alt="Screenshot (33)" src="https://github.com/user-attachments/assets/72f31b08-02b7-4a6e-91bb-f2974e620a60" />
+<img width="1920" height="1080" alt="Screenshot (34)" src="https://github.com/user-attachments/assets/a3e4561f-3229-4eea-975b-829bd24f9f8b" />
+<img width="1920" height="1080" alt="Screenshot (35)" src="https://github.com/user-attachments/assets/96e9cb5c-bcce-472f-bafb-2f8fac00d71f" />
+<img width="1920" height="1080" alt="Screenshot (36)" src="https://github.com/user-attachments/assets/3c8da526-e8ad-4b54-a9c4-f400b621a952" />
+<img width="1920" height="1080" alt="Screenshot (38)" src="https://github.com/user-attachments/assets/42557402-2409-4d34-99ed-aacc237fe733" />
+
 
 ## Highlights / Features
 
@@ -113,3 +124,54 @@ Recommended approach:
 - If you want cooperative behavior, remove or modify the blocking to only filter known duplicate sources instead of cancelling all external messages.
 
 ---
+
+## NUI & Styling Details
+
+- style.css contains chat layout, fonts, responsive aspect-ratio handling, word wrapping fixes and SVG drop-shadow filter usage.
+- shadow.js includes the SVG drop-shadow setup and the JavaScript-level message interception described above.
+- fxmanifest.lua registers the chat theme (style.css and shadow.js) and marks the `chat_theme 'gtao'` msg template. It also references `@ox_lib/init.lua` as a shared script for ox_lib integration.
+
+---
+
+## Troubleshooting & Tips
+
+- If 3D text isn't appearing:
+  - Ensure client can receive the `chat:displayMe` event.
+  - Check that `GetPlayerFromServerId(senderServerId)` returns a valid player ped (not -1 or 0).
+  - Verify displayTime and distance values in cl_chat.lua.
+- If other resources' chat messages are missing, review the "Aggressive External Message Blocking" section above and disable blocking if needed.
+- If `lib` (ox_lib) functions cause errors, either install ox_lib or remove the `lib.registerContext` / `lib.notify` calls in cl_chat.lua.
+
+---
+
+## Contributing
+
+Contributions welcome! Suggestions:
+1. Fork the repository
+2. Create a feature branch
+3. Open a pull request with a detailed description of changes
+
+Please update the README for any functionality or config additions you include.
+
+---
+
+## Changelog
+
+### v1.0.0
+- Initial release:
+  - GTAO-styled chat UI + styling (style.css)
+  - NUI message interception & aggressive blocking (shadow.js, cl_chat.lua, sv_chat.lua)
+  - 3D /me text rendering (cl_chat.lua)
+  - Chat games: /roll, /dice, /flip, /rps, /8ball (sv_chat.lua)
+  - /clear and /chatgames (ox_lib context) support
+
+---
+
+## Support
+
+- Open an issue on GitHub: [mnc-gtao-chat-system issues](https://github.com/MnCLosSantos/mnc-gtao-chat-system/issues)
+- Join the project's Discord (if available) for faster help.
+
+---
+
+Enjoy the GTAO-flavored chat on your FiveM server — and be careful with blocking behavior if you run other chat-dependent resources!
