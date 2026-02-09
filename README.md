@@ -168,11 +168,10 @@ Please update the README for any functionality or config additions you include.
 
 ---
 
-## Support
+## 📞 Download and Community
 
-- Open an issue on GitHub: [mnc-gtao-chat-system issues](https://github.com/MnCLosSantos/mnc-gtao-chat-system/issues)
-- Join the project's Discord (if available) for faster help.
+[![Discord](https://img.shields.io/badge/Discord-Join%20Server-7289da?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/aTBsSZe5C6)
+
+[![GitHub](https://img.shields.io/badge/GitHub-View%20Script-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/MnCLosSantos/mnc-gtao-chat-system)
 
 ---
-
-Enjoy the GTAO-flavored chat on your FiveM server — and be careful with blocking behavior if you run other chat-dependent resources!
