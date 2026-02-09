@@ -62,8 +62,8 @@ git clone https://github.com/MnCLosSantos/mnc-gtao-chat-system.git
 ensure ox_lib        # recommended (if you use ox_lib features)
 ensure mnc-gtao-chat-system
 ```
-
-3. Restart/refresh your server or resource.
+3. Remove base chat resource (keep backup).
+4. Restart/refresh your server or resource.
 
 ---
 
